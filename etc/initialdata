@@ -1,0 +1,85 @@
+
+our @CustomFields = (
+    {
+        Name => 'Resolution Due',
+        Description => 'SLA final resolution date',
+        Type => 'DateTime',
+        LookupType => 'RT::Queue-RT::Ticket',
+        Disabled => 0,
+        MaxValues => 1,
+    },
+    {
+        Name => 'SLA Overdue',
+        Description => 'This field is set upon first violation of an SLA due date',
+        Type => 'Freeform',
+        LookupType => 'RT::Queue-RT::Ticket',
+        Disabled => 0,
+        MaxValues => 1,
+    },
+);
+
+our @ScripConditions = (
+    {
+        Name                 => 'Require Due set according to SLA',
+        Description          => 'Detect a situation where we should set a Due date.',
+        ApplicableTransTypes => 'Create,Correspond,Set,Status,OwnerChange',
+        ExecModule           => 'SLA::RequireDueSet',
+    },
+    {
+        Name                 => 'On SLA Custom Field Change',
+        Description          => 'The SLA Custom Field has changed',
+        ApplicableTransTypes => 'CustomField',
+        ExecModule           => 'SLA::CustomFieldChanged',
+    },
+);
+
+our @ScripActions = (
+    {
+        Name                 => 'Set Due date according to SLA',
+        Description          => 'Set the due date according to an agreement.',
+        ExecModule           => 'SLA::SetDue',
+    },
+    {
+        Name                 => 'Set SLA Overdue',
+        Description          => 'Set SLA Overdue custom field',
+        ExecModule           => 'SLA::SetOverdue',
+    },
+    {
+        Name                 => 'Set SLA Based on a Custom Field',
+        Description          => 'Set the SLA based on the custom field value',
+        ExecModule           => 'SLA::SetFromCustomField',
+    },
+);
+
+our @Scrips = (
+    {
+        Description => 'Set due date if needed according to SLA',
+        ScripCondition => 'Require Due set according to SLA',
+        ScripAction => 'Set Due date according to SLA',
+        Template => 'Blank',
+    },
+    {
+        Description          => 'On Impact Change, Update SLA',
+        ScripCondition       => 'On SLA Custom Field Change',
+        ScripAction          => 'Set SLA Based on a Custom Field',
+        Template             => 'Blank',
+    },
+);
+
+our @Templates = (
+    {
+        Queue => 0,
+        Name => '2-Hour Ticket Due Notice',
+        Description => 'Notice sent via ticket comment two hours before Due date.',
+        Content => 'Subject: Two-Hour Due Notification for {$Ticket->Subject}
+
+
+This message was automatically generated as notice that a ticket is Due
+within the next two hours:
+    Subject: {$Ticket->Subject}
+    Queue:   {$Ticket->Queue}
+    ID:      {$Ticket->id}
+    Due:     {$Ticket->Due}
+',
+    },
+);
