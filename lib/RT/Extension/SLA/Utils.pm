@@ -42,8 +42,22 @@ If you are using RT 4.2 or greater, add this line:
 
 or add C<RT::Extension::SLA::Utils> to your existing C<@Plugins> line.
 
-You willl also want to set the Custom Field to use to trigger SLA
-change conditions:
+=item Clear your mason cache
+
+    rm -rf /opt/rt4/var/mason_data/obj
+
+=item Restart your webserver
+
+=back
+
+=head1 CONFIGURATION
+
+=head2 Setting a Custom Field to Map to SLA
+
+This extension allows you to define another custom field, like Impact or
+Severity, and have changes in that field trigger a change in SLA.
+
+First, you need to set the name of the custom field that will trigger SLA changes:
 
     Set($SLACustomField, 'my field name');
 
@@ -51,8 +65,24 @@ And if you want any SLA levels to not trigger changes:
 
     Set($SLAIgnoreLevels, 'level 1', 'some other level');
 
+Then assign the mapping of custom field values to SLA levels. If they are the same, like:
 
-=item Setup rt-crontool to run overdue checks
+Impact: Low, Medium, High
+
+SLA Levels: Low, Medium, High
+
+Then you don't need to define the mapping. If they are different, add configuration like:
+
+    Set(%SLA_CF_Mapping,
+        '48-hour' => 'Low',
+        '24-hour' => 'Medium',
+        '8-hour'  => 'High',
+    );
+
+where the first value is a configured SLA and the second is a valid value for the
+configured custom field.
+
+=head2 Setup rt-crontool to Run Overdue Checks
 
 To have the B<SLA Overdue> field set automatically, you can have rt-crontool
 run the checks periodically to update the field.  You can use rt-crontool with cron
@@ -65,14 +95,8 @@ Replace the <queue_name> with the name of the queue you would like the check run
 such as 'General'.  If you want to run the checks on multiple queues, you will need
 a line for each queue. 
 
-
-=item Clear your mason cache
-
-    rm -rf /opt/rt4/var/mason_data/obj
-
-=item Restart your webserver
-
-=back
+Schedule the job at the frequency that you want to catch SLA violations. If you want to
+record a value within 5 minutes of a violation, schedule the job to run every 5 minutes.
 
 =head1 AUTHOR
 
@@ -90,7 +114,7 @@ or via the web at
 
 =head1 LICENSE AND COPYRIGHT
 
-This software is Copyright (c) 2017 by Dave Goehrig
+This software is Copyright (c) 2017 Best Practical Solutions
 
 This is free software, licensed under:
 
