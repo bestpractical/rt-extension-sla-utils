@@ -74,13 +74,13 @@ SLA Levels: Low, Medium, High
 Then you don't need to define the mapping. If they are different, add configuration like:
 
     Set(%SLA_CF_Mapping,
-        '48-hour' => 'Low',
-        '24-hour' => 'Medium',
-        '8-hour'  => 'High',
+        'Low' => '48-hour',
+        'Medium' => '24-hour',
+        'High' => '8-hour',
     );
 
-where the first value is a configured SLA and the second is a valid value for the
-configured custom field.
+where the first value is a configured custom field value, and the second is the desired
+corresponding SLA.
 
 =head2 Setup rt-crontool to Run Overdue Checks
 

@@ -58,7 +58,7 @@ to help set the SLA Overdue field.
 
 =cut
 
-package RT::Condition::SLA::Overdue;
+package RT::Condition::SLAOverdue;
 use base 'RT::Condition';
 use strict;
 use warnings;

@@ -15,7 +15,7 @@ our @ScripConditions = (
         Name                 => 'On SLA Custom Field Change',
         Description          => 'The SLA Custom Field has changed',
         ApplicableTransTypes => 'CustomField',
-        ExecModule           => 'SLA::CustomFieldChanged',
+        ExecModule           => 'SLACustomFieldChanged',
     },
 );
 
@@ -23,12 +23,12 @@ our @ScripActions = (
     {
         Name                 => 'Set SLA Overdue',
         Description          => 'Set SLA Overdue custom field',
-        ExecModule           => 'SLA::SetOverdue',
+        ExecModule           => 'SLASetOverdue',
     },
     {
         Name                 => 'Set SLA Based on a Custom Field',
         Description          => 'Set the SLA based on the custom field value',
-        ExecModule           => 'SLA::SetFromCustomField',
+        ExecModule           => 'SLASetFromCustomField',
     },
 );
 
