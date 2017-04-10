@@ -70,8 +70,6 @@ Then whenever this field is changed, this condition will be met.
 
 =cut
 
-use Data::Dumper;
-
 sub IsApplicable {
     my $self = shift;
     my $txn = $self->TransactionObj;
@@ -80,11 +78,6 @@ sub IsApplicable {
 
     my $cf = RT::CustomField->new(RT->SystemUser);
     my ($ret, $msg) = $cf->Load($txn->Field);
-    
-
-    RT::Logger->debug(Dumper $txn);
-    RT::Logger->debug($ret);
-    RT::Logger->debug($msg);
     
     RT::Logger->error("Unable to load CF for id: "
           . $txn->Field . " Error: $msg" ) unless $ret;
